@@ -1,0 +1,97 @@
+// Pasos crear servidor
+
+1.) Crear repositorio, iniciar git y enlazar
+
+2.) Iniciar nmp con consola ---> npm install -y 
+El -y sirve para poner todo por defecto, es decir, es como darle al enter muchas veces
+
+3.) Instalar express y nodemon con consola ---> npm i express nodemon
+
+4.) Crear index.js 
+
+5.) Añadir "start" en "script" en package.json y añadir "node index.js"
+
+6.) Crear servidor:
+    const express = require('express')
+
+    const PORT = 3000;
+    const server = express()
+
+7.) Hacer que el servidor escuche:
+    server.listen(PORT, () => {
+        console.log(`Servidor a la espera de órdenes en http://localhost:${PORT}`);
+    })
+
+8.) Comprobar que funciona  ---> npm start
+
+9.) Crear archivo .gitignore con lo que no queremos subir a git:
+    node_modules
+    package-lock.json
+
+10.) Configurar nodemon (esto nos permite no tener que reiniciar manualmente el servidor con cada cambio).
+Lo hacemos añadiendo "dev" a "scripts" en package.jason y le ponermos "nodemon index.js"
+
+11.) A partir de ahora iniciaremos el server con ---> nodemon run dev
+¡Cuidado! Si tenemos un autoguardado por tiempo, nodemon reinicia por cada guardad y nos puede joder el servidor porque ha guardado a mitad de una linea de código
+
+12.) Crear el router en la parte de arriba del código (debajo de la declaración de server)
+    const express = require('express')
+
+    const PORT = 3000;
+    const server = express()
+
+--->const router = express.Router();
+
+13 Añadir router.get para recibir las llamadas. Ej.:
+    router.get('/', (request, response) => {
+        return response.send('Servidor funcionando')
+    })
+
+14.) Usar el router en el servidor (en la parte baja del código, encima de server.listen):
+--->server.use('/', router)
+
+    server.listen(PORT, () => {
+        console.log(`Servidor a la espera de órdenes en http://localhost:${PORT}`);
+    })
+
+15.) Comprobar que funciona ----> npm run dev
+
+16.) Si funciona, empezamos la estructuración, creando una carpeta src con otra carpeta dentro llamada api
+
+17.) Dentro de api, creamos una carperta con el nombre de lo que vamos a guardar. Ej.: movies
+
+18.) Dentro de movies creamos un movies.router.js, donde guardaremos el router
+
+19.) En el archivo de rutas, requerir express y guardar el router y las direciones que va a manejar el router
+    const express = require('express')
+
+    // Crear router
+    const router = express.Router()
+
+    // Añadimos rutas
+    router.get('/', (request, response) => {
+        return response.send('Server funcionando')
+    })
+
+    router.get('/one', (request, response) => {
+        return response.send('Película One')
+    })
+
+    .
+    .
+    .
+
+19.) Al final del archivo exportamos el router:
+    module.exports = router
+    // Solo puede haber un module.export y deberá ir al final del codigo. Si quieres exportar varias cosas puedes meterlas en un objeto y exportar eso
+
+20.) Borramos el router en index.js menos el server.use, pero hacemos que el documento lo requiera
+    const moviesRoutes = require('./src/api/movies/movies.routes')
+
+21.) El server.use del paso 14 lo cambiamos a:
+    server.use('/movies', moviesRoutes)
+    // Esto have que todas las llamadas a localhost:/movies sean manejadas por el router de movies
+
+/// NOTAS IMPORTANTES ///
+Al importar (como por ejemplo hacemos con el require('./movies')) realmente estamos ejecutando todo ese archivo.
+Si hay llamadas a funciones estas se ejecutarán y si hay un module.exports este se utilizará a modo de return (este es el paso clave donde estamos exportando)

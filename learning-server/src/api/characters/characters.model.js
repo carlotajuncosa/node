@@ -7,7 +7,7 @@ const characterSchema = new Schema(
         name: { type: String, required: true },
         race: { type: String, enum: ["human", "saiyan", "android", "namekian", "unknown"], required: true, default: "unknown" },
         universe: { type: Number, min: 0, max: 12 },
-        trnasform: { type: Boolean, default: false },
+        transform: { type: Boolean, default: false },
         genre: { type: String, enum: ["male", "female", "namekian", "angel", "genderless"]},
     },
     {
